@@ -1,0 +1,116 @@
+import React, { useEffect, useRef, useState } from 'react';
+import Chart from 'chart.js/auto';
+import LuksootWorking from './LuksootWork';
+
+function PhakWorking(props) {
+    const {data,DopDow} = props;
+    const [LuksootPoc,setLuksootPoc] = useState('chart');
+    useEffect(()=>{
+        setLuksootPoc('chart');
+    },[DopDow])
+    const SalaryTier = ["ต่ำกว่า10000","10000-20000","20000-30000","30000-40000","40000-50000","มากกว่า50000"];
+    const DataForSalary = data.filter((item)=>{return item.work_experience !== undefined && item.education.stuID !== undefined 
+        && item.education.stuID.length === 11 && Object.keys(item.work_experience).length !== 0})
+    .sort((a, b) => {
+        return a.education.stuID.slice(0, 2) - b.education.stuID.slice(0, 2);
+    });
+    const  luksoot = Array.from(new Set(DataForSalary.filter((item)=>{return item.education.major === DopDow})
+    .map((index)=>{return index.education.course})));
+
+    const PhaksalDat = DataForSalary.filter((item)=>{return item.education.major === DopDow});
+    
+    const PhakSalYear = Array.from(new Set(DataForSalary.map((index)=>{return index.education.stuID.slice(0,2)})));
+    const PhakYearArr = [];
+    for (let a = 0; a < SalaryTier.length; a++) {
+        PhakYearArr.push([]);
+        for (let b = 0; b < PhakSalYear.length; b++) {
+            PhakYearArr[a].push(0);
+        }
+    }
+
+      PhaksalDat.map((index)=>{
+        let whatsal = Object.keys(index.work_experience);
+        let lengthWhatsal = Object.keys(index.work_experience).length;
+        // console.log(index.work_experience[whatsal[lengthWhatsal-1]].income );
+        for (let a = 0; a < SalaryTier.length; a++) {
+          if (SalaryTier[a]===index.work_experience[whatsal[lengthWhatsal-1]].income) {
+            for (let b = 0; b < PhakSalYear.length; b++) {
+              if (PhakSalYear[b]===index.education.stuID.slice(0,2)) {
+                PhakYearArr[a][b] +=1;
+              }
+
+            }
+          }
+        }
+      });
+      //console.log(PhakYearArr);
+
+    const WorkNewsCase = [];
+    for (let a = 0; a < SalaryTier.length; a++) {
+        WorkNewsCase.push({
+        label: SalaryTier[a],
+        data: PhakYearArr[a],
+        borderWidth: 1,
+    })}
+    
+    const chartRef = useRef(null);
+    useEffect(() => {
+        if (chartRef.current && LuksootPoc === 'chart') {
+            const ctx = chartRef.current.getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: PhakSalYear,
+                    datasets: WorkNewsCase,
+                    },
+                options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'รายได้ที่ที่นิสิตภาควิชา'+DopDow+'ได้รับเมื่อทำงาน'
+                    },
+                },
+                responsive: true,
+                scales: {
+                    x: {
+                        stacked: true,
+                    },
+                    y: {
+                        stacked: true
+                    }
+                }
+                },
+            });
+        
+            return () => {
+                chart.destroy();
+            };
+        }
+    }, [DopDow,LuksootPoc]);
+
+    function SalaryLuksoot(e) {
+        setLuksootPoc(e.target.value)
+    }
+    return(
+        <>
+            <select value={LuksootPoc} onChange={SalaryLuksoot}>
+            <option value={''}>--เลือกหลักสูตร--</option>
+            <option value={'chart'}>ทุกหลักสูตร</option>
+            {luksoot.map((index)=>{
+                return <option key={index} value={index}>{index}</option>
+            })}
+        </select>
+        {LuksootPoc === 'chart' &&(
+            <div>
+                <canvas ref={chartRef} />
+            </div>
+        )}
+        {LuksootPoc !== 'chart' &&(
+            <LuksootWorking Data={data} doPdow={LuksootPoc} mainDopDow={DopDow}/>
+        )
+        }
+        </>
+    );
+}
+
+export default PhakWorking;

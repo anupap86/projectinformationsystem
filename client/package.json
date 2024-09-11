@@ -1,0 +1,44 @@
+{
+  "name": "client",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 8000",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@swc/core": "^1.3.42",
+    "axios": "^1.3.4",
+    "buffer": "^6.0.3",
+    "chart.js": "^4.2.1",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "firebase": "^9.18.0",
+    "js-cookie": "^3.0.1",
+    "jsonwebtoken": "^9.0.0",
+    "jwt-decode": "^3.1.2",
+    "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
+    "react-cookie": "^4.1.1",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.43.9",
+    "react-icons": "^4.8.0",
+    "react-router-dom": "^6.9.0",
+    "react-thailand-address-autocomplete": "^0.0.6",
+    "react-transition-group": "^4.4.5",
+    "tailwind-datepicker-react": "^1.2.3",
+    "yargs": "^17.7.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "@vitejs/plugin-react": "^3.1.0",
+    "@vitejs/plugin-react-swc": "^3.0.0",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.21",
+    "tailwindcss": "^3.2.7",
+    "vite": "^4.2.0"
+  }
+}
